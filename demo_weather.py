@@ -31,8 +31,8 @@ def connect_to_wifi(ssid, password):
         print('IP address = ' + status[0])
 
 # Your Wi-Fi credentials
-ssid = 'Your_SSID'
-password = 'Your_PASSWORD'
+ssid = 'Tuan iphone'
+password = '12345678'
 connect_to_wifi(ssid, password)
 
 # Global city ID (Sapporo)
