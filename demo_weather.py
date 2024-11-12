@@ -89,9 +89,13 @@ def fetch_weather(city_ID):
 
 def create_web_page(weather_data, city_ID):
     # Extract data from API response
-    rain_probability = weather_data['forecasts'][0]['chanceOfRain']['T12_18'] or '0'
+    rain_probability = weather_data['forecasts'][0]['chanceOfRain']['T18_24'] or '0'
     temperature = dht20.dht20_temperature()
     humidity = dht20.dht20_humidity()
+
+    # 
+    title = weather_data['forecasts'][0]['image']['title']
+    image = weather_data['forecasts'][0]['image']['url']
     
     # Update display
     update_display(rain_probability, temperature, humidity)
@@ -146,7 +150,11 @@ def create_web_page(weather_data, city_ID):
                 Tokyo
             </button>
         </div>
+        <div>
+            <img src="{image}" alt="Weather Icon" width="100" height="100">
+        </div>
         <h3>Weather Information</h3>
+        <p>Title: {title} %</p>
         <p>Rain Probability: {rain_probability}</p>
         <p>Temperature: {temperature} °C</p>
         <p>Humidity: {humidity} %</p>
