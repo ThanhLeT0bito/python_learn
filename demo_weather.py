@@ -96,22 +96,27 @@ def create_web_page(weather_data, city_ID):
     # Update display
     update_display(rain_probability, temperature, humidity)
     
-    # HTML for web interface
+    # HTML for web interface with JavaScript change listener
     html = f"""
     <html>
     <head>
         <title>Weather Station</title>
+        <script>
+            function onCityChange() {{
+                var cityID = document.getElementById('city_ID').value;
+                window.location.href = '/city?city_ID=' + cityID;
+            }}
+        </script>
     </head>
     <body>
         <h2>Weather Station</h2>
         <form action="/city" method="get">
             <label for="city_ID">Choose a city:</label>
-            <select name="city_ID">
+            <select id="city_ID" name="city_ID" onchange="onCityChange()">
                 <option value="016010" {'selected' if city_ID == '016010' else ''}>Sapporo</option>
                 <option value="270000" {'selected' if city_ID == '270000' else ''}>Osaka</option>
                 <option value="130010" {'selected' if city_ID == '130010' else ''}>Tokyo</option>
             </select>
-            <input type="submit" value="Get Weather">
         </form>
         <h3>Weather Information</h3>
         <p>Rain Probability: {rain_probability}</p>
