@@ -88,23 +88,15 @@ def fetch_weather(city_ID):
     return response.json()
 
 def create_web_page(weather_data, city_ID):
-    # Extract data from API response
-    rain_probability = weather_data['forecasts'][0]['chanceOfRain']['T18_24'] or '0'
-    temperature = dht20.dht20_temperature()
-    humidity = dht20.dht20_humidity()
-
-    # 
-    title = weather_data['forecasts'][0]['image']['title']
-    image = weather_data['forecasts'][0]['image']['url']
+    # Extract the forecast data from the response
+    forecasts = weather_data['forecasts']
     
-    # Update display
-    update_display(rain_probability, temperature, humidity)
-    
-    # HTML for web interface with JavaScript button click handlers
+    # Start building the HTML
     html = f"""
     <html>
     <head>
-        <title>Weather Station</title>
+        <meta charset="UTF-8">
+        <title>Weather Station Japan</title>
         <style>
             .city-button {{
                 padding: 10px 20px;
@@ -122,17 +114,20 @@ def create_web_page(weather_data, city_ID):
                 background-color: #f0f0f0;
                 color: black;
             }}
+            .forecast-day {{
+                border: 1px solid #ddd;
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 5px;
+            }}
         </style>
         <script>
             function selectCity(cityID) {{
                 window.location.href = '/city?city_ID=' + cityID;
             }}
             function highlightButton(selectedID) {{
-                // Remove selected class from all buttons
                 var buttons = document.querySelectorAll('.city-button');
                 buttons.forEach(button => button.classList.remove('selected'));
-                
-                // Add selected class to the clicked button
                 document.getElementById(selectedID).classList.add('selected');
             }}
         </script>
@@ -150,14 +145,32 @@ def create_web_page(weather_data, city_ID):
                 Tokyo
             </button>
         </div>
-        <div>
-            <img src="{image}" alt="Weather Icon" width="100" height="100">
+        <h3>3-Day Weather Forecast</h3>
+    """
+
+    # Iterate over each day's forecast and add it to the HTML
+    for forecast in forecasts:
+        date = forecast['date']
+        date_label = forecast['dateLabel']
+        weather = forecast['telop']
+        min_temp = forecast['temperature']['min']['celsius'] or "N/A"
+        max_temp = forecast['temperature']['max']['celsius'] or "N/A"
+        rain_prob = forecast['chanceOfRain']['T12_18'] or "0%"
+        image_url = forecast['image']['url']
+        image_title = forecast['image']['title']
+
+        html += f"""
+        <div class="forecast-day">
+            <h4>{date_label} - {date}</h4>
+            <p>Weather: {weather}</p>
+            <p>Temperature: Min {min_temp}°C / Max {max_temp}°C</p>
+            <p>Rain Probability (12:00 - 18:00): {rain_prob}</p>
+            <img src="{image_url}" alt="{image_title}" width="80" height="60">
         </div>
-        <h3>Weather Information</h3>
-        <p>Title: {title} %</p>
-        <p>Rain Probability: {rain_probability}</p>
-        <p>Temperature: {temperature} °C</p>
-        <p>Humidity: {humidity} %</p>
+        """
+
+    # End of the HTML
+    html += """
     </body>
     </html>
     """
