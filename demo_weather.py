@@ -89,35 +89,63 @@ def fetch_weather(city_ID):
 
 def create_web_page(weather_data, city_ID):
     # Extract data from API response
-    rain_probability = weather_data['forecasts'][0]['chanceOfRain']['T12_18']
+    rain_probability = weather_data['forecasts'][0]['chanceOfRain']['T12_18'] or '0'
     temperature = dht20.dht20_temperature()
     humidity = dht20.dht20_humidity()
     
     # Update display
     update_display(rain_probability, temperature, humidity)
     
-    # HTML for web interface with JavaScript change listener
+    # HTML for web interface with JavaScript button click handlers
     html = f"""
     <html>
     <head>
         <title>Weather Station</title>
+        <style>
+            .city-button {{
+                padding: 10px 20px;
+                margin: 5px;
+                font-size: 16px;
+                cursor: pointer;
+                border: none;
+                border-radius: 5px;
+            }}
+            .city-button.selected {{
+                background-color: #4CAF50;
+                color: white;
+            }}
+            .city-button:not(.selected) {{
+                background-color: #f0f0f0;
+                color: black;
+            }}
+        </style>
         <script>
-            function onCityChange() {{
-                var cityID = document.getElementById('city_ID').value;
+            function selectCity(cityID) {{
                 window.location.href = '/city?city_ID=' + cityID;
+            }}
+            function highlightButton(selectedID) {{
+                // Remove selected class from all buttons
+                var buttons = document.querySelectorAll('.city-button');
+                buttons.forEach(button => button.classList.remove('selected'));
+                
+                // Add selected class to the clicked button
+                document.getElementById(selectedID).classList.add('selected');
             }}
         </script>
     </head>
-    <body>
+    <body onload="highlightButton('{city_ID}')">
         <h2>Weather Station</h2>
-        <form action="/city" method="get">
-            <label for="city_ID">Choose a city:</label>
-            <select id="city_ID" name="city_ID" onchange="onCityChange()">
-                <option value="016010" {'selected' if city_ID == '016010' else ''}>Sapporo</option>
-                <option value="270000" {'selected' if city_ID == '270000' else ''}>Osaka</option>
-                <option value="130010" {'selected' if city_ID == '130010' else ''}>Tokyo</option>
-            </select>
-        </form>
+        <div>
+            <button id="016010" class="city-button" onclick="selectCity('016010'); highlightButton('016010');">
+                Sapporo
+            </button>
+            <button id="270000" class="city-button" onclick="selectCity('270000'); highlightButton('270000');">
+                Osaka
+            </button>
+            <button id="130010" class="city-button" onclick="selectCity('130010'); highlightButton('130010');">
+                Tokyo
+            </button>
+        </div>
         <h3>Weather Information</h3>
         <p>Rain Probability: {rain_probability}</p>
         <p>Temperature: {temperature} °C</p>
@@ -126,6 +154,7 @@ def create_web_page(weather_data, city_ID):
     </html>
     """
     return html
+
 
 def update_display(rain_probability, temperature, humidity):
     display.fill(0)
