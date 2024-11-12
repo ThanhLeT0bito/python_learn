@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Weather Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .details { margin-top: 20px; }
+        label, select { font-size: 1.2em; }
+        .city-info { font-size: 1.1em; margin-top: 10px; }
+    </style>
+    <script>
+        function showCityDetails() {
+            const cityData = {
+"1": {"temperature": "22°C", "humidity": "60%"},
+"2": {"temperature": "24°C", "humidity": "55%"},
+"3": {"temperature": "21°C", "humidity": "58%"},
+"4": {"temperature": "23°C", "humidity": "63%"},
+"5": {"temperature": "18°C", "humidity": "65%"},
+
+            };
+            const selectedCity = document.getElementById("citySelect").value;
+            const cityInfo = cityData[selectedCity];
+
+            if (cityInfo) {
+                document.getElementById("temperature").innerText = "Temperature: " + cityInfo.temperature;
+                document.getElementById("humidity").innerText = "Humidity: " + cityInfo.humidity;
+            } else {
+                document.getElementById("temperature").innerText = "";
+                document.getElementById("humidity").innerText = "";
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Select a City to View Weather Details</h1>
+    <label for="citySelect">Choose a city:</label>
+    <select id="citySelect" onchange="showCityDetails()">
+        <option value="">--Select a city--</option>
+<option value="1">Tokyo</option>
+<option value="2">Osaka</option>
+<option value="3">Kyoto</option>
+<option value="4">Fukuoka</option>
+<option value="5">Sapporo</option>
+
+    </select>
+
+    <div class="details">
+        <div id="temperature" class="city-info"></div>
+        <div id="humidity" class="city-info"></div>
+    </div>
+
+</body>
+</html>

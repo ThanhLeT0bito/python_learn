@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Client</title>
+</head>
+<body>
+  <h1>WebSocket Data</h1>
+  <div id="data">Connecting...</div>
+
+  <script>
+    // Đặt địa chỉ IP của bạn ở đây
+    const socket = new WebSocket("ws://192.168.0.157:8765");
+
+    socket.onopen = function() {
+      console.log("Connected to WebSocket server.");
+    };
+
+    socket.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      document.getElementById("data").innerHTML = `Temperature: ${data.temperature} °C, Humidity: ${data.humidity}%`;
+    };
+
+    socket.onclose = function() {
+      console.log("Disconnected from WebSocket server.");
+      document.getElementById("data").innerHTML = "Disconnected.";
+    };
+  </script>
+</body>
+</html>
