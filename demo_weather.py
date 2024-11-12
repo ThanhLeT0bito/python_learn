@@ -31,7 +31,7 @@ def connect_to_wifi(ssid, password):
         print('IP address = ' + status[0])
 
 # Your Wi-Fi credentials
-ssid = 'Tuan iphone'
+ssid = 'Tuan iPhone'
 password = '12345678'
 connect_to_wifi(ssid, password)
 
